@@ -50,18 +50,6 @@ async def read_category_by_query(category: str):
     return books_to_return
 
 
-@app.get("/books/{book_author}")
-async def read_author_category_by_query(book_author: str, category: str):
-    books_to_return = []
-    for book in BOOKS:
-        if (
-            book.author.casefold() == category.casefold()
-            and book.category.casefold() == category.casefold()
-        ):
-            books_to_return.append(book)
-    return books_to_return
-
-
 @app.post("/books/create_book")
 async def create_book(new_book: Book):
     BOOKS.append(new_book)
@@ -74,3 +62,29 @@ async def update_book(updated_book: Book):
         if BOOKS[i].title.casefold() == updated_book.title.casefold():
             BOOKS[i] = updated_book
             return "Update completed"
+
+
+@app.delete("/books/delete_book/{book_title}")
+async def delete_book(book_title: str):
+    for i in range(len(BOOKS)):
+        if BOOKS[i].title.casefold() == book_title.casefold():
+            BOOKS.pop(i)
+            return f"Book with {book_title} deleted successfully !"
+
+
+# Assignment
+
+# Here is your opportunity to keep learning!
+
+# 1. Create a new API Endpoint that can fetch all books from a specific author
+# using either Path Parameters or Query Parameters.
+
+
+# Solution in next video
+@app.get("/booksauthor")
+async def read_author_by_query(book_author: str):
+    books_to_return = []
+    for book in BOOKS:
+        if book.author.casefold() == book_author.casefold():
+            books_to_return.append(book)
+    return books_to_return
