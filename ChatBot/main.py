@@ -3,7 +3,7 @@ from transformers import (
     AutoModelForCausalLM,
     pipeline,
 )
-from fastapi import FastAPI, HTTPException, Request, Form
+from fastapi import FastAPI, HTTPException, Request, Form,WebSocket
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 import torch
@@ -41,6 +41,12 @@ pipe = pipeline(
     device_map="auto",
 )
 
+@app.websocket("/ws")
+async def chat(websocket:WebSocket):
+    await websocket.accept()
+    while True:
+        user_input = await websocket.receive_text()
+        await websocket.send_text(user_input)
 
 @app.post("/", response_class=HTMLResponse)
 async def chat(request: Request, user_input: Annotated[str, Form()]):
